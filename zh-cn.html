@@ -1,0 +1,268 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>MUN会议记录</title>
+    <script type="text/javascript" charset="utf-8" src="ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="src/editor_api.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="lang/zh-cn/zh-cn.js"></script>
+    <script src="src/jquery-2.1.0.min.js"></script>
+    <script src="src/FileAPI.js"></script>
+    <link rel="stylesheet" type="text/css" href="src/style.css">
+</head>
+<body>
+<div id="all">
+    <div id="list">
+        <h1>发言名单</h1>
+
+        <form id="todo-form">
+            <input id="todo"  type="text" />
+        </form>
+
+        <ul id="show-items"></ul>
+
+        <div id="dropZone">拖放名单到此处</div>
+        <div id="dropZone2">拖放记录到此处</div>
+
+        <div id="savebtns">
+            <button  onclick="Savelist()">保存名单</button>
+            <button  onclick="Savetext()">保存记录</button>
+        </div>
+    </div>
+
+
+    <div id="main">
+        <h1 style="width:570px;height:52px;">会议记录</h1>
+        <div><script id="editor" type="text/plain" style="width:570px;height:10%;margin-top:70px;"></script></div>
+        <div id="btns">
+            <button onclick="setContent1(true)">动议</button>
+            <button onclick="setContent2(true)">有主持核心磋商</button>
+            <button onclick="setContent3(true)">自由磋商</button>
+            <button onclick="setContent4(true)">工作文件</button>
+            <button onclick="setContent5(true)">决议草案</button>
+            <button onclick="setContent6(true)">修正案</button> 
+        </div>
+    </div>
+
+
+    <div id="timer">
+        <h1>计时器</h1>
+
+        <div id="fayan" style="margin:70 0 -10 0;">
+            <p class="time" id="txt1" style="margin:-15 0 0 0;">00:00</p>
+            <p class="shij">
+                发言时间：<input class="timei" type="number" id="ma" value=""> 分 <input type="number" class="timei" id="sa" value="" > 秒</br>
+                <button id="a" onclick="Start()">开始</button>
+                <button id="b" onclick="Pause()" disabled="false">暂停</button>
+            </p>
+        </div>
+
+        <div id="cuoshang">
+            <p class="time" id="txt2" style="margin:0;">00:00</p>
+            <p class="shij">
+                磋商总时间：<input class="timei" type="number" id="mb" value="" > 分 <input type="number" id="sb" class="timei" value=""> 秒</br>
+                <button id="c" onClick="Start2()">开始</button>
+                <button id="d" onClick="Pause2()" disabled="false">暂停</button>
+            </p>
+        </div>
+
+        <div id="dianm">  
+            <h3 style="margin:0;">点名</h3>
+            <p class="renren" style="margin:7 0 0 0;">
+          出席<input class="renshu" type="number" id="ax"></br>
+          缺席<input class="renshu" type="number" id="bx"></br>
+                <button  onclick="outn()">确定</button><button onclick="Clear(2)">重置</button></br>
+                简单多数<span class="duoshu"></span></br>
+                2/3多数<span class="duoshu"></span></br>
+                20%<span class="duoshu"></span></br>
+            </p>
+        </div>
+
+        <div id="vote">
+            <h3 style="margin:0;">投票</h3>
+            <p class="renren">
+                赞成<input type="number" class="renshu" id="upvote" value=""></br>
+                反对<input type="number" class="renshu" id="downvote" value=""></br>
+                弃权<input type="number" class="renshu">
+            </p>
+            <button onclick="jdds()">1/2</button>
+            <button onclick="ersan()">2/3</button>
+            <button onclick="Clear(3)">重置</button>
+        </div>
+
+    </div>
+</div>
+<footer>©2014 SCAN</footer>
+<script src="src/main.js"></script>
+<script type="text/javascript">
+//编辑器
+
+    var ue = UE.getEditor('editor');
+
+    function setContent1(isAppendTo) {
+        UE.getEditor('editor').setContent('动议：', isAppendTo);
+    }
+    function setContent2(isAppendTo) {
+        UE.getEditor('editor').setContent('动议就 问题进行有主持核心磋商', isAppendTo);
+        UE.getEditor('editor').setContent('总时间： 分钟', isAppendTo);
+        UE.getEditor('editor').setContent('每位代表发言时间： 秒', isAppendTo);
+    }
+    function setContent3(isAppendTo) {
+        UE.getEditor('editor').setContent('动议一个自由磋商', isAppendTo);
+        UE.getEditor('editor').setContent('总时间： 分钟', isAppendTo);
+    }
+    function setContent4(isAppendTo) {
+        UE.getEditor('editor').setContent('工作文件', isAppendTo);
+        UE.getEditor('editor').setContent('起草国：', isAppendTo);
+    }
+    function setContent5(isAppendTo) {
+        UE.getEditor('editor').setContent('决议草案', isAppendTo);
+        UE.getEditor('editor').setContent('起草国：', isAppendTo);
+        UE.getEditor('editor').setContent('附议国：', isAppendTo);
+    }
+    function setContent6(isAppendTo) {
+        UE.getEditor('editor').setContent('修正案', isAppendTo);
+        UE.getEditor('editor').setContent('起草国：', isAppendTo);
+        UE.getEditor('editor').setContent('附议国：', isAppendTo);
+     
+    }
+
+    function passed(isAppendTo) {
+        UE.getEditor('editor').setContent('通过！', isAppendTo);
+    }
+
+    function notpassed(isAppendTo) {
+        UE.getEditor('editor').setContent('不通过！', isAppendTo);
+    }
+
+//计时器
+    var t1, n1, m1, s1, t2, n2, m2, s2;
+    var ma, sa, mb, sb;
+
+    x=document.getElementById('txt1');
+    y=document.getElementById('txt2');
+    a=document.getElementById('a');
+    b=document.getElementById('b');
+    c=document.getElementById('c');
+    d=document.getElementById('d');
+
+
+
+    
+    function checktime(i) {
+        if (i<10) {
+            i="0" + i;
+        }
+        return i;
+    }
+    
+        //First
+    
+    function timedCount() {
+        m1=Math.floor(n1/60);
+        s1=n1%60;
+        m1=checktime(m1);
+        s1=checktime(s1);
+        x.innerHTML=m1 + ":" + s1;
+        n1=n1-1;
+        if (n1<9) {
+            x.style.color="red";
+        }
+        if (n1==-1) {
+            Stop();
+        }
+    } 
+    
+    function Start() {
+        ma=document.getElementById('ma').value;
+        sa=document.getElementById('sa').value;
+
+        n1=ma*60 + sa*1;
+
+
+        t1=setInterval("timedCount()",1000);
+        a.onclick=function(){Stop()};
+        a.innerHTML="停止";
+        b.disabled=false;
+        x.style.color="black";
+    }
+    
+    function Pause() {
+        clearInterval(t1);
+        b.onclick=function(){Next()};
+        b.innerHTML="继续";
+    }
+    
+    function Next() {
+        t1=setInterval("timedCount()",1000);
+        b.onclick=function(){Pause()};
+        b.innerHTML="暂停";
+    }
+    
+    function Stop() {
+        x.innerHTML="00:00";
+        x.style.color="#d9d9d9";
+        clearInterval(t1);
+        a.onclick=function(){Start()};
+        a.innerHTML="开始";
+        b.onclick=function(){Pause()};
+        b.innerHTML="暂停";
+        b.disabled=true;
+    }
+    
+        //Second
+    
+    function timedCount2() {
+        m2=Math.floor(n2/60);
+        s2=n2%60;
+        m2=checktime(m2);
+        s2=checktime(s2);
+        y.innerHTML=m2 + ":" + s2;
+        n2=n2-1;
+        if (n2<9) {
+            y.style.color="red";
+        }
+        if (n2==-1) {
+            y.style.color="black";
+            Stop2();
+        }
+    }
+    
+    function Start2() {
+
+        mb=document.getElementById('mb').value;
+        sb=document.getElementById('sb').value;
+
+        n2=mb*60 + sb*1;
+        t2=setInterval("timedCount2()",1000);
+        c.onclick=function(){Stop2()};
+        c.innerHTML="停止";
+        d.disabled=false;
+        y.style.color="black";
+    }
+    
+    function Pause2() {
+        clearInterval(t2);
+        d.onclick=function(){Next2()};
+        d.innerHTML="继续";
+    }
+    
+    function Next2() {
+        t2=setInterval("timedCount2()",1000);
+        d.onclick=function(){Pause2()};
+        d.innerHTML="暂停";
+    }
+    
+    function Stop2() {
+        y.innerHTML="00:00";
+        y.style.color="#d9d9d9";
+        clearInterval(t2);
+        c.onclick=function(){Start2()};
+        c.innerHTML="开始";
+        d.onclick=function(){Pause2()};
+        d.innerHTML="暂停";
+        d.disabled=true;
+    }
+
+</script> 
+</body>
+</html>

@@ -1,0 +1,308 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>MUN minutes</title>
+    <script type="text/javascript" charset="utf-8" src="ueditor.config.en.js"></script>
+    <script type="text/javascript" charset="utf-8" src="src/editor_api.js"></script>
+    <script type="text/javascript" charset="utf-8" src="lang/zh-cn/zh-cn.js"></script>
+    <script src="src/jquery-2.1.0.min.js"></script>
+    <script src="src/FileAPI.js"></script>
+    <link rel="stylesheet" type="text/css" href="src/style.css">
+    <style type="text/css">
+    body {
+        font-family: helvetica;
+
+    }
+    .renshu {
+        position: absolute;       
+        left: 105px;
+        width: 45px;
+    }
+
+    .duoshu {
+        position: absolute;
+        left: 120px;
+        width: 45px;
+        text-align: center;
+    }
+
+    .RCb   {
+
+        padding-left: 24px;
+    }
+
+    .AddBtns {
+        background-color: #f9f9f9;
+        transition:color 0.3s;
+    }
+    .AddBtns:hover {
+
+        color: #477eda;
+
+    }
+
+     #btns  {
+         padding-left: 0%;           
+         margin-top: 10px;
+         margin-left: -40px;
+         width: 690px;
+     }
+    </style>
+</head>
+<body>
+<div id="all">
+    <div id="list">
+        <h1>Speakers List</h1>
+
+        <form id="todo-form">
+            <input id="todo"  type="text" />
+        </form>
+
+        <ul id="show-items"></ul>
+
+        <div id="dropZone">List</div>
+        <div id="dropZone2">Minutes</div>
+
+        <div id="savebtns">
+            <button  onclick="Savelist()">SaveList</button>
+            <button  onclick="Savetext()">SaveMinutes</button>
+        </div>
+    </div>
+
+
+    <div id="main">
+        <h1 style="width:570px;height:52px;">Minutes</h1>
+        <div><script id="editor" type="text/plain" style="width:570px;height:10%;margin-top:70px;"></script></div>
+        <div id="btns">
+            <button class="AddBtns" onclick="setContent1(true)">Motion</button>
+            <button class="AddBtns" onclick="setContent2(true)">Moderated Caucus</button>
+            <button class="AddBtns" onclick="setContent3(true)">Unmoderated Caucus</button>
+            <button class="AddBtns" onclick="setContent4(true)">Working Paper</button>
+            <button class="AddBtns" onclick="setContent5(true)">Draft Resolution</button>
+            <button class="AddBtns" onclick="setContent6(true)">Amendment</button> 
+        </div>
+    </div>
+
+
+    <div id="timer">
+        <h1>Timer</h1>
+
+        <div id="fayan" style="margin:70 0 -10 0;">
+            <p class="time" id="txt1" style="margin:-15 0 0 0;">00:00</p>
+            <p class="shij">
+                Countdown：<input class="timei" type="number" id="ma" value=""> m <input type="number" class="timei" id="sa" value="" > s</br>
+                <button id="a" onclick="Start()">Start</button>
+                <button id="b" onclick="Pause()" disabled="false">Pause</button>
+            </p>
+        </div>
+
+        <div id="cuoshang">
+            <p class="time" id="txt2" style="margin:0;">00:00</p>
+            <p class="shij">
+                Countdown：<input class="timei" type="number" id="mb" value="" > m <input type="number" id="sb" class="timei" value=""> s</br>
+                <button id="c" onClick="Start2()">Start</button>
+                <button id="d" onClick="Pause2()" disabled="false">Pause</button>
+            </p>
+        </div>
+
+        <div id="dianm">  
+            <h3 style="margin:0;">Roll Call</h3>
+            <p class="renren" style="margin:7 0 0 0;">
+          Present<input class="renshu" type="number" id="ax"></br>
+          Absent<input class="renshu" type="number" id="bx"></br>
+                <button  class="RCb" onclick="outn()">OK</button><button class="RCb" onclick="Clear(2)">Reset</button></br>
+                Simple Majority<span class="duoshu"></span></br>
+                2/3 Majority<span class="duoshu"></span></br>
+                20% of all<span class="duoshu"></span></br>
+            </p>
+        </div>
+
+        <div id="vote">
+            <h3 style="margin:0;">Vote</h3>
+            <p class="renren">
+                Affirmative<input type="number" class="renshu" id="upvote" value=""></br>
+                Against<input type="number" class="renshu" id="downvote" value=""></br>
+                Abstain<input type="number" class="renshu">
+            </p>
+            <button onclick="jdds()">1/2</button>
+            <button onclick="ersan()">2/3</button>
+            <button onclick="Clear(3)">Reset</button>
+        </div>
+
+    </div>
+</div>
+<footer>©2014 SCAN</footer>
+<script src="src/main.js"></script>
+<script type="text/javascript">
+//编辑器
+
+    var ue = UE.getEditor('editor');
+
+    function setContent1(isAppendTo) {
+        UE.getEditor('editor').setContent('Motion:', isAppendTo);
+    }
+    function setContent2(isAppendTo) {
+        UE.getEditor('editor').setContent('motions for a moderated caucus about .', isAppendTo);
+        UE.getEditor('editor').setContent('Total time is', isAppendTo);
+        UE.getEditor('editor').setContent(' second(s) for each delegate.', isAppendTo);
+    }
+    function setContent3(isAppendTo) {
+        UE.getEditor('editor').setContent('motions for an unmoderated caucus.', isAppendTo);
+        UE.getEditor('editor').setContent('Total time is  minute(s).', isAppendTo);
+    }
+    function setContent4(isAppendTo) {
+        UE.getEditor('editor').setContent('Working Paper', isAppendTo);
+        UE.getEditor('editor').setContent('Sponsor(s):', isAppendTo);
+    }
+    function setContent5(isAppendTo) {
+        UE.getEditor('editor').setContent('Draft Resolution', isAppendTo);
+        UE.getEditor('editor').setContent('Sponsor(s): ', isAppendTo);
+        UE.getEditor('editor').setContent('Signatories:', isAppendTo);
+    }
+    function setContent6(isAppendTo) {
+        UE.getEditor('editor').setContent('Amendment ', isAppendTo);
+        UE.getEditor('editor').setContent('Sponsor(s): ', isAppendTo);
+        UE.getEditor('editor').setContent('Signatories: ', isAppendTo);
+     
+    }
+
+    function passed(isAppendTo) {
+        UE.getEditor('editor').setContent('It was passed!', isAppendTo);
+    }
+
+    function notpassed(isAppendTo) {
+        UE.getEditor('editor').setContent('It was not passed.', isAppendTo);
+    }
+
+//计时器
+    var t1, n1, m1, s1, t2, n2, m2, s2;
+    var ma, sa, mb, sb;
+
+    x=document.getElementById('txt1');
+    y=document.getElementById('txt2');
+    a=document.getElementById('a');
+    b=document.getElementById('b');
+    c=document.getElementById('c');
+    d=document.getElementById('d');
+
+
+
+    
+    function checktime(i) {
+        if (i<10) {
+            i="0" + i;
+        }
+        return i;
+    }
+    
+        //First
+    
+    function timedCount() {
+        m1=Math.floor(n1/60);
+        s1=n1%60;
+        m1=checktime(m1);
+        s1=checktime(s1);
+        x.innerHTML=m1 + ":" + s1;
+        n1=n1-1;
+        if (n1<9) {
+            x.style.color="red";
+        }
+        if (n1==-1) {
+            Stop();
+        }
+    } 
+    
+    function Start() {
+        ma=document.getElementById('ma').value;
+        sa=document.getElementById('sa').value;
+
+        n1=ma*60 + sa*1;
+
+
+        t1=setInterval("timedCount()",1000);
+        a.onclick=function(){Stop()};
+        a.innerHTML="Stop";
+        b.disabled=false;
+        x.style.color="black";
+    }
+    
+    function Pause() {
+        clearInterval(t1);
+        b.onclick=function(){Next()};
+        b.innerHTML="Next";
+    }
+    
+    function Next() {
+        t1=setInterval("timedCount()",1000);
+        b.onclick=function(){Pause()};
+        b.innerHTML="Pause";
+    }
+    
+    function Stop() {
+        x.innerHTML="00:00";
+        x.style.color="#d9d9d9";
+        clearInterval(t1);
+        a.onclick=function(){Start()};
+        a.innerHTML="Start";
+        b.onclick=function(){Pause()};
+        b.innerHTML="Pause";
+        b.disabled=true;
+    }
+    
+        //Second
+    
+    function timedCount2() {
+        m2=Math.floor(n2/60);
+        s2=n2%60;
+        m2=checktime(m2);
+        s2=checktime(s2);
+        y.innerHTML=m2 + ":" + s2;
+        n2=n2-1;
+        if (n2<9) {
+            y.style.color="red";
+        }
+        if (n2==-1) {
+            y.style.color="black";
+            Stop2();
+        }
+    }
+    
+    function Start2() {
+
+        mb=document.getElementById('mb').value;
+        sb=document.getElementById('sb').value;
+
+        n2=mb*60 + sb*1;
+        t2=setInterval("timedCount2()",1000);
+        c.onclick=function(){Stop2()};
+        c.innerHTML="Stop";
+        d.disabled=false;
+        y.style.color="black";
+    }
+    
+    function Pause2() {
+        clearInterval(t2);
+        d.onclick=function(){Next2()};
+        d.innerHTML="Next";
+    }
+    
+    function Next2() {
+        t2=setInterval("timedCount2()",1000);
+        d.onclick=function(){Pause2()};
+        d.innerHTML="Pause";
+    }
+    
+    function Stop2() {
+        y.innerHTML="00:00";
+        y.style.color="#d9d9d9";
+        clearInterval(t2);
+        c.onclick=function(){Start2()};
+        c.innerHTML="Start";
+        d.onclick=function(){Pause2()};
+        d.innerHTML="Pause";
+        d.disabled=true;
+    }
+
+</script> 
+</body>
+</html>
